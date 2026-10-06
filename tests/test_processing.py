@@ -1,4 +1,4 @@
-from processing.cleaning import clean_price, clean_rating, clean_tags, clean_text
+from processing.cleaning import clean_price, clean_rating, clean_tags, clean_text, normalize_url
 from processing.deduplication import deduplicate
 from processing.validation import validate_record
 
@@ -8,6 +8,7 @@ def test_cleaning_values() -> None:
     assert clean_price("£51.77") == 51.77
     assert clean_rating("Three") == 3
     assert clean_tags([" Fiction ", "science", "fiction"]) == "fiction;science"
+    assert normalize_url("/catalogue/item.html", "https://example.com/") == "https://example.com/catalogue/item.html"
 
 
 def test_validation_returns_reasons() -> None:

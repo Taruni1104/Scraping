@@ -53,6 +53,7 @@ def clean_record(record: dict[str, Any]) -> dict[str, Any]:
     cleaned = dict(record)
     for field in ("source", "source_url", "name_or_title", "category", "author", "description"):
         cleaned[field] = clean_text(cleaned.get(field))
+    cleaned["source_url"] = normalize_url(cleaned["source_url"])
     cleaned["name_or_title"] = strip_quotes(cleaned["name_or_title"])
     cleaned["price"] = clean_price(cleaned.get("price"))
     cleaned["rating"] = clean_rating(cleaned.get("rating"))

@@ -62,11 +62,13 @@ def run() -> dict[str, Any]:
     cleaned: list[dict[str, Any]] = []
     rejected_by_reason: Counter[str] = Counter()
     cleaned_by_source: Counter[str] = Counter()
+    rejected_record_count = 0
     for source, raw_records in raw_by_source.items():
         for raw_record in raw_records:
             record = clean_record(raw_record)
             problems = validate_record(record)
             if problems:
+                rejected_record_count += 1
                 for problem in problems:
                     rejected_by_reason[problem] += 1
                 logger.warning("Rejected %s record: %s", source, "; ".join(problems))
@@ -82,7 +84,7 @@ def run() -> dict[str, Any]:
         "duration_seconds": round(time.perf_counter() - started, 3),
         "raw_records_by_source": {source: len(records) for source, records in raw_by_source.items()},
         "cleaned_records_by_source": dict(cleaned_by_source),
-        "rejected_records": sum(rejected_by_reason.values()),
+        "rejected_records": rejected_record_count,
         "rejected_by_reason": dict(rejected_by_reason),
         "duplicates_removed": duplicate_count,
         "final_record_count": len(unique),
